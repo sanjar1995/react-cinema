@@ -9,5 +9,8 @@ export default defineConfig({
       {find:'@', replacement:fileURLToPath(new URL('./src', import.meta.url))},
       {find:'@i', replacement:fileURLToPath(new URL('./src/assets/images', import.meta.url))}
     ]
+  },
+  css:{
+    devSourcemap:true
   }
 })

@@ -1,8 +1,13 @@
-import React from 'react'
+import Slider from '../components/Slider'
+import Upcoming from '../components/Upcoming'
 
 function Home() {
   return (
-    <div>Home</div>
+    <>
+    <Upcoming/>
+    <Slider type="movie"/>
+    <Slider type="tv"/>
+    </>
   )
 }
 
