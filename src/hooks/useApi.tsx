@@ -1,16 +1,17 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import api from "../api/ClientApi"
 
-function useApi(url:string) {
+function useApi() {
     const [data, setdata] = useState([])
-    async function getData(){
+    async function getData(url:string){
         let {data} = await api.get(url)
-        setdata(data.results)
+        if(data.results){
+          setdata(data.results)
+        }else{
+          setdata(data)
+        }
     } 
-    useEffect(()=>{
-       getData() 
-    },[])
-  return {data}
+  return {data,getData}
 }
 
 export default useApi 

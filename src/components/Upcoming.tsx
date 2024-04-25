@@ -7,15 +7,21 @@ import { Autoplay, Pagination, Navigation } from 'swiper/modules';
 import Btn from './UI/Btn';
 import useUpcoming from '../store/upcoming';
 import useApi from '../hooks/useApi';
+import Loading from './UI/Loading';
+import { useAxiosInterceptor } from '../api/ClientApi';
+
 export default function Upcoming() {
   const {upcoming,getUpcoming} = useUpcoming()
   const line = useRef<HTMLDivElement | null>(null);
   const [nextSlide, setnextSlide] = useState(1)
-  const { data } = useApi('movie/upcoming');
+  const { data,getData } = useApi();
   useEffect(()=>{
     getUpcoming(data)
   },[data])
-  
+  useEffect(()=>{
+    getData('movie/upcoming')
+  },[])
+  const {loading} = useAxiosInterceptor()
   
   const onAutoplayTimeLeft = (s:any, time:any, progress:any) => {
     if(line.current){
@@ -30,6 +36,7 @@ export default function Upcoming() {
     }
     console.log(swiper.activeIndex);
   }
+  if(loading)return <Loading/>
   return (
     <>
       <Swiper

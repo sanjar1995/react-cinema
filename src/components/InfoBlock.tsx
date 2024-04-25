@@ -1,28 +1,54 @@
 import closeIcon from "@i/close.svg";
-import infoblockImg from "@i/infoblock.jpg";
 import Cast from "./UI/Cast";
 import Btn from "./UI/Btn";
-function InfoBlock({active}:{active:boolean}) {
+import { useEffect } from "react";
+import useApi from "../hooks/useApi";
+import useFilmId from "../store/FilmById";
+import { getRuntime, getYear } from "../store/helper";
+function InfoBlock({
+  active,
+  setinfoblock,
+  movieId,
+  type,
+}: {
+  active: boolean;
+  setinfoblock: (bool: boolean) => void;
+  movieId: number | null;
+  type: string;
+}) {
+  const {getMovie} = useFilmId()
+  const { data, getData }:{data:IMovieId[], getData:(url:string)=>void} = useApi();
+  useEffect(() => {
+    getMovie(data)
+  }, [data]);
+  useEffect(() => {
+    getData(`${type}/${movieId}`);
+  }, [movieId]);
+  if (!active) return "";
   return (
-    <div className={`infoblock ${active ? 'active' : ''}`}>
-      <img src={infoblockImg} alt="" className="infoblock__img" />
-      <button className="infoblock__close">
+    <div className={`infoblock ${active ? "active" : ""}`}>
+      <img src={import.meta.env.VITE_IMG_FULL + data.backdrop_path} alt="" className="infoblock__img" />
+      <button className="infoblock__close" onClick={() => setinfoblock(false)}>
         <img src={closeIcon} alt="" />
       </button>
       <div className="infoblock__content">
-        <h2 className="infoblock__title">Шан-Чи и легенда десяти колец</h2>
-        <p className="infoblock__text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nibh bibendum nec, pulvinar id in in ac nisl semper. Condimentum tellus ac integer condimentum. Amet, vitae dictum convallis dignissim. Lacus, suscipit sagittis, adipiscing metus, risus convallis sit...</p>
+        <h2 className="infoblock__title">{data.title || data.name}</h2>
+        <p className="infoblock__text">
+          {data.overview || 'Izox topilmadi'}
+        </p>
         <ul className="infoblock__genres">
-            <li>2021</li>
-            <li>боевик</li>
-            <li>приключения</li>
-            <li>фэнтези</li>
-            <li>2h 12m</li>
+          <li>{getYear(data.release_date || data.first_air_date)}</li>
+          {
+            data.genres?.map((genre:IGenres,index:number)=>{
+              return <li key={index}>{genre.name}</li>
+            })
+          }
+          <li>{getRuntime(data.runtime || data.episode_run_time, type)}</li>
         </ul>
         <ul className="infoblock__cast">
-            <Cast/>
+          <Cast />
         </ul>
-        <Btn/>
+        <Btn />
       </div>
     </div>
   );

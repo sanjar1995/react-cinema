@@ -14,12 +14,26 @@ interface upcomingStore {
   upcoming: IUpcoming[];
   getUpcoming: (data: IUpcoming[]) => void;
 }
-interface IMovieTv extends IUpcoming{
-  
+interface movieId {
+  movie: IMovieId[];
+  getMovie: (data: IMovieId[]) => void;
 }
+interface IMovieTv extends IUpcoming {}
 
 interface movieTvStore {
   movie: IMovieTv[];
   tv: IMovieTv[];
-  getMovieTv: (data: IMovieTv[],type:string) => void;
+  getMovieTv: (data: IMovieTv[], type: string) => void;
+}
+interface IGenres {
+  id: number;
+  name: string;
+}
+interface IMovieId extends IUpcoming {
+  genres: IGenres[];
+  original_title: string;
+  status: string;
+  budget: number;
+  release_date: string;
+  runtime: number;
 }

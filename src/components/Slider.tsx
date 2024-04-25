@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import arrowImg from "@i/arrow.svg";
-import sliderImg from "@i/slider-img.jpg";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css/navigation";
 import { Navigation } from "swiper/modules";
@@ -10,9 +9,10 @@ import { Link } from "react-router-dom";
 import InfoBlock from "./InfoBlock";
 
 function Slider({ type }: { type: string }) {
-  const { data } = useApi(`${type}/popular`);
+  const { data, getData } = useApi();
   const { getMovieTv } = useMovieTv();
-  const [infoblock, setinfoblock] = useState(false)
+  const [infoblock, setinfoblock] = useState(false);
+  const [movieId, setmovieId] = useState<null | number>(null);
   const options = {
     320: {
       slidesPerView: 1,
@@ -33,6 +33,14 @@ function Slider({ type }: { type: string }) {
   useEffect(() => {
     getMovieTv(data, type);
   }, [data]);
+  useEffect(() => {
+    getData(`${type}/popular`)
+  }, []);
+  function openInfoblock(id:number){
+    setmovieId(id)
+    setinfoblock(true)
+  }
+  
   return (
     <div className="slider">
       <h2 className="slider__title">
@@ -48,7 +56,11 @@ function Slider({ type }: { type: string }) {
       >
         {data.map((movie: any, index: number) => {
           return (
-            <SwiperSlide onClick={()=> setinfoblock(true)} key={index} className="slider__slide">
+            <SwiperSlide
+              onClick={() => openInfoblock(movie.id)}
+              key={index}
+              className="slider__slide"
+            >
               <img
                 src={import.meta.env.VITE_IMG + movie.poster_path}
                 alt=""
@@ -64,7 +76,9 @@ function Slider({ type }: { type: string }) {
           </Link>
         </SwiperSlide>
       </Swiper>
-      <InfoBlock active={infoblock}/>
+      {
+        infoblock && <InfoBlock active={infoblock} setinfoblock={setinfoblock} movieId={movieId} type={type}/>
+      }
     </div>
   );
 }
