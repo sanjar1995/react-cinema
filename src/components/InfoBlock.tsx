@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import useApi from "../hooks/useApi";
 import useFilmId from "../store/FilmById";
 import { getRuntime, getYear } from "../store/helper";
+import { useAxiosInterceptor } from "../api/ClientApi";
 function InfoBlock({
   active,
   setinfoblock,
@@ -17,14 +18,15 @@ function InfoBlock({
   type: string;
 }) {
   const {getMovie} = useFilmId()
-  const { data, getData }:{data:IMovieId[], getData:(url:string)=>void} = useApi();
+  const { data, getData } = useApi();
+  const {loading} = useAxiosInterceptor()
   useEffect(() => {
-    getMovie(data)
+    getMovie(data,type)
   }, [data]);
   useEffect(() => {
-    getData(`${type}/${movieId}`);
+    getData(`${type}/${movieId}?append_to_response=credits`);
   }, [movieId]);
-  if (!active) return "";
+  if (loading) return "";
   return (
     <div className={`infoblock ${active ? "active" : ""}`}>
       <img src={import.meta.env.VITE_IMG_FULL + data.backdrop_path} alt="" className="infoblock__img" />
@@ -37,7 +39,7 @@ function InfoBlock({
           {data.overview || 'Izox topilmadi'}
         </p>
         <ul className="infoblock__genres">
-          <li>{getYear(data.release_date || data.first_air_date)}</li>
+          <li>{data.release_date?.split('-')[0] || data.first_air_date?.split('-')[0]}</li>
           {
             data.genres?.map((genre:IGenres,index:number)=>{
               return <li key={index}>{genre.name}</li>
@@ -46,9 +48,15 @@ function InfoBlock({
           <li>{getRuntime(data.runtime || data.episode_run_time, type)}</li>
         </ul>
         <ul className="infoblock__cast">
-          <Cast />
+          {
+            data.credits?.cast.map((actor:IActor,index:number)=>{
+              if(index < 4) return <Cast key={index} actor={actor}/>
+              
+            })
+          }
+          
         </ul>
-        <Btn />
+        <Btn type={type} movieId={movieId}/>
       </div>
     </div>
   );

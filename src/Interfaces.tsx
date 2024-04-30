@@ -1,7 +1,7 @@
 interface IRouter {
   path: string;
   element: JSX.Element;
-  name: JSX.Element | string;
+  name?: JSX.Element | string;
 }
 interface IUpcoming {
   backdrop_path: string;
@@ -16,14 +16,16 @@ interface upcomingStore {
 }
 interface movieId {
   movie: IMovieId[];
-  getMovie: (data: IMovieId[]) => void;
+  getMovie: (data: IMovieId[],type:string | undefined) => void;
 }
-interface IMovieTv extends IUpcoming {}
+interface IMovieTv extends IUpcoming {
+  name:string
+}
 
 interface movieTvStore {
   movie: IMovieTv[];
   tv: IMovieTv[];
-  getMovieTv: (data: IMovieTv[], type: string) => void;
+  getMovieTv: (data: IMovieTv[], type: string ) => void;
 }
 interface IGenres {
   id: number;
@@ -36,4 +38,8 @@ interface IMovieId extends IUpcoming {
   budget: number;
   release_date: string;
   runtime: number;
+}
+interface IActor{
+  profile_path:string,
+  name:string
 }

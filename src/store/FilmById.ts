@@ -1,13 +1,9 @@
 import { create } from "zustand";
-import useApi from "../hooks/useApi";
-const {getData,data} = useApi()
 
 const useFilmId = create<movieId>((set)=>({
     movie:[],
-    casts:[],
-    getMovie:(data:IMovieId[],type:string)=>{
-        
-        getData(`${type}/${id}/credits`)
+    tv:[],
+    getMovie:(data:IMovieId[],type:string | undefined)=>{
         set({movie:data})
     }
 }))

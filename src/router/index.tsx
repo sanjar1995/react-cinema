@@ -1,3 +1,4 @@
+import CurrentFilm from "../pages/CurrentFilm";
 import Home from "../pages/Home";
 import Movie from "../pages/Movie";
 import Search from "../pages/Search";
@@ -24,4 +25,8 @@ export const router:IRouter[] = [
         element:<Search />,
         name: <img src={searchIcon} alt="" />
     },
+    {
+        path:'/watch/:type/:id',
+        element:<CurrentFilm />,
+    }
 ]
